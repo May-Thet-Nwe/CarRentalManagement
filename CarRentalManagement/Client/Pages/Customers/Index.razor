@@ -5,9 +5,10 @@
 
 <h3 class="card-title">Car Customers</h3>
 <br />
+
 <a href="/customers/create" class="btn btn-secondary">
     <span class="oi oi-plus"></span>
-    Create New Customers
+    Create New Customer
 </a>
 @if (Customers == null)
 {
@@ -18,7 +19,10 @@ else
     <table class=" table table-responsive">
         <thead>
             <tr>
+                <th>First Name</th>
+                <th> Last Name</th>
                 <th>Driving Licence</th>
+                <th>Address</th>
                 <th>Contact Number</th>
                 <th>Email Address</th>
                 <th>Actions</th>
@@ -27,18 +31,25 @@ else
         <tbody>
             @foreach (var customer in Customers)
             {
+
+
                 <tr>
-                    @*    <td>@customer.Name</td> *@
+                    <td>@customer.FirstName</td>
+                    <td>@customer.LastName</td>
+                    <td>@customer.DrivingLicense</td>
+                    <td>@customer.Address</td>
+                    <td>@customer.ContactNumber</td>
+                    <td>@customer.EmailAddress</td>
                     <td>
-                        @* <a href="/customers/view/@customer.Id" class=" btn btn-primary">
-                <span class="oi oi-book"></span>
-                </a> *@
-                        @* <a href="/customers/edit/@customer.Id" class=" btn btn-warning">
-                <span class=" oi oi-pencil"></span>
-                </a> *@
-                        @* <button class=" btn btn-danger" @onclick="@(() =>Delete(customer.Id))">
-                <span class=" oi oi-delete"></span>
-                </button> *@
+                        <a href="/customers/view/@customer.Id" class=" btn btn-primary">
+                            <span class="oi oi-book"></span>
+                        </a>
+                        <a href="/customers/edit/@customer.Id" class=" btn btn-warning">
+                            <span class=" oi oi-pencil"></span>
+                        </a>
+                        <button class=" btn btn-danger" @onclick="@(() =>Delete(customer.Id))">
+                            <span class=" oi oi-delete"></span>
+                        </button>
                     </td>
                 </tr>
             }
@@ -51,18 +62,21 @@ else
 
     protected async override Task OnInitializedAsync()
     {
-        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.MakesEndpoint}");
+        Customers = await _client.GetFromJsonAsync<List<Customer>>($"{Endpoints.CustomersEndpoint}");
     }
 
-    // async Task Delete(int customerId)
-    // {
-    //     if (Customers != null)
-    //     // {
-    //     //     var customer = Customers.First(q => q.Id == customerId);
-    //     //     var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {customer.Name}?");
-    //     //     if (confirm)
-    //     //     {
-    //             await _client.DeleteAsync($"{Endpoints.MakesEndpoint}/{customerId}");
-    //             await OnInitializedAsync();
-    //         }
+    async Task Delete(int customerId)
+    {
+        if (Customers != null)
+        {
+            var customer = Customers.First(q => q.Id == customerId);
+            var confirm = await js.InvokeAsync<bool>("confirm", $"Do you want to delete {customer.DrivingLicense}?");
+            if (confirm)
+            {
+                await _client.DeleteAsync($"{Endpoints.MakesEndpoint}/{customerId}");
+                await OnInitializedAsync();
+            }
+        }
+
+    }
 }
